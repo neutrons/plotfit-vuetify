@@ -8,8 +8,8 @@ import mutations from './mutations';
 // Import modules
 import Stitch from '../Stitch';
 import SANS2D from './SANS2D';
-import Browse from '../Browse';
-import Fit from '../Fit/SANSFit';
+import Browse from '../Browse/SANS';
+import Fit from '../Fit/SANS';
 
 export default {
   namespaced: true,

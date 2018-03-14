@@ -6,6 +6,7 @@
       autocomplete
       chips
       deletable-chips
+      :placeholder='filesToFit.length ? "Select a file to fit" : "No files to fit"'
       hint='Pick a file to fit'
       max-height='250'
       :disabled='!filesToFit.length'

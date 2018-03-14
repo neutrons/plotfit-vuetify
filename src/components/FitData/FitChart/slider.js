@@ -2,8 +2,8 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import { eventBus } from '../../../assets/js/eventBus';
 import fitLine from './fitLine';
-// eslint-disable-next-line
-const Worker = require('worker-loader!./fitWorker');
+
+const Worker = require('worker-loader!./fitWorker'); // eslint-disable-line
 const myWorker = new Worker();
 myWorker.postMessage('Starting');
 
@@ -181,7 +181,7 @@ export default {
         vm.updateFitTableResults(JSON.parse(result.data));
 
         if (vm.fittedData.length <= 0) {
-          const errorMsg = '<strong>Error!</strong> Fitted y-values < 0, thus no fit-line to display.';
+          const errorMsg = 'Error! Fitted y-values < 0, thus no fit-line to display.';
           eventBus.$emit('add-notification', errorMsg, 'error');
         } else {
           // update line plot
@@ -191,7 +191,7 @@ export default {
         vm.toggleIsFitting(false);
       };
       myWorker.onerror = function emsg(result) {
-        console.log('Error message:', result.data);
+        eventBus.$emit('add-notification', result.data, 'danger');
       };
     },
     addLoader() {

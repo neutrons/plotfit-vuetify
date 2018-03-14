@@ -10,6 +10,7 @@
       deletable-chips
       hide-selected
       hint='Pick a file to plot'
+      :placeholder='filteredFiles.length ? "Select a file to plot" : "Fetch or Upload files"'
       :disabled='filteredFiles.length === 0'
       @change='$refs.filesList.isActive = $event.length > 1'>
     </v-select>
@@ -25,9 +26,6 @@ export default {
     },
   },
   computed: {
-    allFiles() {
-      return Object.assign({}, this.fetched, this.uploaded);
-    },
     fileKeys() {
       return Object.keys(this.allFiles);
     },

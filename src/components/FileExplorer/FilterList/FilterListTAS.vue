@@ -13,6 +13,12 @@ export default {
     ...mapState('TAS/Fit', {
       selected: state => state.filters,
     }),
+    ...mapState('TAS/Combine', {
+      storedCombined: state => state.storedCombined,
+    }),
+    allFiles() {
+      return Object.assign({}, this.fetched, this.uploaded, this.storedCombined);
+    },
   },
   methods: {
     ...mapMutations('TAS/Fit', [

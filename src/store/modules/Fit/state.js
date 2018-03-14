@@ -3,7 +3,6 @@ import settings from '../../fits/settings';
 import scales from '../../scales/scales';
 
 export default {
-  deleteKeys: [],
   filters: [],
   selectedData: [],
   filteredData: [],
@@ -27,11 +26,10 @@ export default {
     gradientDifference: settings.gradientDifference.value,
     maxIterations: settings.maxIterations.value,
   },
-  fitEquation: undefined,
   fitError: null,
-  fitInitialValues: [],
   fitNote: '',
   brushSelection: [],
   isFitting: false,
   fitScores: null,
+  equationEditSelect: [],
 };

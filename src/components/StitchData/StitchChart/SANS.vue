@@ -1,9 +1,12 @@
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import Chart from './DefaultChart';
 
 export default {
   name: 'SANSStitch',
+  components: {
+    'v-edit-chart-button': () => import('../../EditChart/EditChartButton/SANSStitchEditChartButton'),
+  },
   extends: Chart,
   data() {
     return {
@@ -11,13 +14,9 @@ export default {
     };
   },
   computed: {
-    ...mapState('SANS', {
-      colorDomain: state => state.colorDomain,
-    }),
     ...mapState('SANS/Stitch', {
       filesSelected: state => state.filesSelected,
       plotScale: state => state.plotScale,
-      deleteKeys: state => state.deleteKeys,
       label: state => state.label,
       brushes: state => state.brushes,
       brushScale: state => state.brushScale,
@@ -39,6 +38,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions('SANS/Stitch', [
+      'deletePoint',
+    ]),
     ...mapMutations('SANS/Stitch', [
       'addNewBrush',
       'setBrushes',

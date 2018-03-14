@@ -6,8 +6,7 @@ export default (state, selected) => {
       keys.push(key);
     }
   });
-  // eslint-disable-next-line
-  state.deleteKeys = keys;
+
   // now update new list
   // eslint-disable-next-line
   state.filesSelected = selected;

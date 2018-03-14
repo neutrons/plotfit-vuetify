@@ -21,7 +21,7 @@
 
               <!-- Chart container -->
               <v-flex xs12 :id='`stitch-chart-wrapper-${ID}`' text-xs-center mb-3>
-                <svg :class='`stitch-chart stitch-chart-${ID}`' />
+                <svg :class='`chart stitch-chart stitch-chart-${ID}`' />
               </v-flex>
 
               <v-flex xs12>
@@ -29,8 +29,7 @@
                   <v-container class='pa-0' fluid>
                     <v-layout row wrap class='pa-0'>
                       <v-reset-chart-button @reset-chart='resetChart' :disable='filesSelected.length === 0'></v-reset-chart-button>
-                      <v-export-chart-button :ID='ID' :selection='`stitch-chart-${ID}`' :disable='filesSelected.length === 0'></v-export-chart-button>
-                      <v-legend-button @toggle-legend='showLegend = !showLegend' @close-legend='showLegend = false' :disable='filesSelected.length === 0'></v-legend-button>
+                      <v-edit-chart-button :disable='filesSelected.length === 0' ></v-edit-chart-button>
 
                       <slot name='toolbar-slot'
                         :toggle-edit='toggleEdit'
@@ -40,16 +39,8 @@
                         :draw-saved-brushes='drawSavedBrushes'
                         :files-selected='filesSelected'
                       ></slot>
-
                       <v-spacer></v-spacer>
-                      <!-- scatter point hover values -->
-                      <v-subheader class='hidden-sm-and-down' v-if='filesSelected.length > 0 && xPoint'>
-                        <span class='mr-2'>X: {{xPoint.toExponential(2)}}</span>
-                        <span class='mr-2'>Y: {{yPoint.toExponential(2)}}</span>
-                        <span class='mr-2'>Error: {{errorPoint.toExponential(2)}}</span>
-                      </v-subheader>
-                      <v-spacer></v-spacer>
-                      <v-btn :icon='!isBreakpointSmall' flat @click='showTabs = !showTabs' v-if='stitchedData.length > 0'>
+                      <v-btn icon flat @click='showTabs = !showTabs' v-if='stitchedData.length > 0'>
                         <v-icon small>{{ showTabs ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</v-icon>
                       </v-btn>
                     </v-layout>
@@ -79,12 +70,13 @@
       </v-tabs>
   </v-flex>
 
-  <v-legend
-    :drawer-right='showLegend'
-    :color-scale='colorScale'
-    :files-selected='filesSelected'
-    :is-stitch='stitchedData.length > 0'>
-  </v-legend>
+  <v-slide-y-transition>
+    <v-delete-point-modal
+      :show='showDeleteModal'
+      @cancel='resetDeletePoint'
+      @delete='confirmDeletePoint'
+    ></v-delete-point-modal>
+  </v-slide-y-transition>
 </v-container>
 </template>
 
@@ -93,6 +85,7 @@
 import * as d3 from 'd3';
 
 import chartMethods from './chartMethods';
+import deletePoint from '../../DeletePoint/DeletePointMixins';
 
 export default {
   name: 'ChartStitch',
@@ -104,19 +97,17 @@ export default {
   },
   mixins: [
     chartMethods,
+    deletePoint,
   ],
   components: {
-    'v-legend-button': () => import('../../Legend/LegendButton'),
-    'v-legend': () => import('../../Legend/Legend'),
-    'v-export-chart-button': () => import('../../ExportChartButton'),
     'v-reset-chart-button': () => import('../../ResetChartButton'),
     'v-plotted-data-table': () => import('../../PlottedDataTable'),
+    'v-delete-point-modal': () => import('../../DeletePoint/DeletePointModal'),
   },
   data() {
     return {
       svg: undefined,
       g: undefined,
-      showLegend: false,
       showTabs: true,
       width: 960,
       height: 600,
@@ -155,7 +146,8 @@ export default {
       return this.plotScale.x.label;
     },
     colorScale() {
-      return d3.scaleOrdinal(d3.schemeCategory20).domain(this.colorDomain);
+      return d3.scaleOrdinal(d3.schemeCategory20)
+        .domain(this.plotData.map(d => d.key));
     },
     xAxis() {
       return d3.axisBottom(this.xScale);
@@ -203,7 +195,6 @@ export default {
   mounted() {
     this.getContainerWidth(`#stitch-chart-wrapper-${this.ID}`);
     this.drawChart();
-    this.setResponsive(`stitch-chart-width-change-${this.ID}`, `#stitch-chart-wrapper-${this.ID}`, `.stitch-chart-${this.ID}`);
   },
   watch: {
     chartConfigurations: {
@@ -215,16 +206,11 @@ export default {
             this.getContainerWidth(`#stitch-chart-wrapper-${this.ID}`);
             this.removeChart();
             this.drawChart();
-            this.setResponsive(`stitch-chart-width-change-${this.ID}`, `#stitch-chart-wrapper-${this.ID}`, `.stitch-chart-${this.ID}`);
           } else {
             this.drawChart();
           }
         });
       },
-    },
-    title() {
-      // maintain responsive charts when switching between plot components
-      this.setResponsive(`stitch-chart-width-change-${this.ID}`, `#stitch-chart-wrapper-${this.ID}`, `.stitch-chart-${this.ID}`);
     },
   },
 };
@@ -274,8 +260,8 @@ iframe.width-changed {
     max-width: 1000px;
   } // Large screen (desktop)
   @media screen and (min-width: 1264px) and (max-width: 1903px) {
-    max-height: 1500px / 1.77px;
-    max-width: 1500px;
+    max-height: 1100px / 1.77px;
+    max-width: 1100px;
   } // Extra large screen (ultrawide)
   @media screen and (min-width: 1904px) {
     max-height: 1800px / 1.77px;

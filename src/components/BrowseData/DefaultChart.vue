@@ -9,14 +9,8 @@
         <v-toolbar flat height='auto'>
           <v-container class='pa-0' fluid>
             <v-layout row wrap class='pa-0'>
-              <v-reset-chart-button @reset-chart='resetChart'></v-reset-chart-button>
-              <v-spacer></v-spacer>
-              <!-- scatter point hover values -->
-              <v-subheader class='hidden-sm-and-down' v-if='xPoint'>
-                <span class='mr-2'>X: {{xPoint.toExponential(2)}}</span>
-                <span class='mr-2'>Y: {{yPoint.toExponential(2)}}</span>
-                <span class='mr-2'>Error: {{errorPoint.toExponential(2)}}</span>
-              </v-subheader>
+              <v-reset-chart-button :disable='plotData.length === 0' @reset-chart='resetChart'></v-reset-chart-button>
+              <v-edit-chart-button :disable='plotData.length === 0' ></v-edit-chart-button>
               <v-spacer></v-spacer>
               <v-btn icon @click='show = !show' v-if='Object.keys(browseData).length'>
                 <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</v-icon>
@@ -61,6 +55,14 @@
             </v-tabs>
         </v-slide-y-transition>
       </v-flex>
+
+      <v-slide-y-transition>
+        <v-delete-point-modal
+          :show='showDeleteModal'
+          @cancel='resetDeletePoint'
+          @delete='confirmDeletePoint'
+        ></v-delete-point-modal>
+      </v-slide-y-transition>
     </v-layout>
 </template>
 
@@ -69,22 +71,22 @@
 import * as d3 from 'd3';
 
 import chartMethods from './chartMethods';
+import deletePoint from '../DeletePoint/DeletePointMixins';
 
 export default {
   name: 'DefaultBrowseChart',
   mixins: [
     chartMethods,
+    deletePoint,
   ],
   components: {
     'v-reset-chart-button': () => import('../ResetChartButton'),
     'v-metadata-table': () => import('../MetadataTable'),
     'v-plotted-data-table': () => import('../PlottedDataTable'),
+    'v-delete-point-modal': () => import('../DeletePoint/DeletePointModal'),
   },
   data() {
     return {
-      xPoint: null,
-      yPoint: null,
-      errorPoint: null,
       xType: 'x',
       yType: 'y',
       width: 960,
@@ -114,7 +116,7 @@ export default {
         return [0, 0];
       }
 
-      return d3.extent(this.plotData, d => d.x);
+      return d3.extent(this.plotData[0].values, d => d.x);
     },
     yScale() {
       return d3.scaleLinear()
@@ -127,10 +129,11 @@ export default {
         return [0, 0];
       }
 
-      return d3.extent(this.plotData, d => d.y);
+      return d3.extent(this.plotData[0].values, d => d.y);
     },
     colorScale() {
-      return d3.scaleOrdinal(d3.schemeCategory20).domain([0]);
+      return d3.scaleOrdinal(d3.schemeCategory20)
+        .domain(this.plotData.map(d => d.key));
     },
     xAxis() {
       return d3.axisBottom(this.xScale);
@@ -172,24 +175,15 @@ export default {
   mounted() {
     this.getContainerWidth(`#quickplot-wrapper-${this.ID}`);
     this.drawChart();
-    this.setResponsive(`quickplot-width-change-${this.ID}`, `#quickplot-wrapper-${this.ID}`, `.quickplot-${this.ID}`);
   },
   watch: {
     plotData() {
-      this.$nextTick(() => {
-        if (!this.plotData.length) {
-          this.getContainerWidth(`#quickplot-wrapper-${this.ID}`);
-          this.removeChart();
-          this.drawChart();
-          this.setResponsive(`chart-width-change-${this.ID}`, `#quickplot-wrapper-${this.ID}`, `.chart-${this.ID}`);
-        } else {
-          this.drawChart();
-        }
-      });
-    },
-    title() {
-      // maintain responsive charts when switching between plot components
-      this.setResponsive(`quickplot-width-change-${this.ID}`, `#quickplot-wrapper-${this.ID}`, `.quickplot-${this.ID}`);
+      if (!this.plotData.length) {
+        this.getContainerWidth(`#quickplot-wrapper-${this.ID}`);
+        this.removeChart();
+      }
+
+      this.drawChart();
     },
   },
 };
@@ -237,8 +231,8 @@ iframe.width-changed {
     max-width: 1000px;
   } // Large screen (desktop)
   @media screen and (min-width: 1264px) and (max-width: 1903px) {
-    max-height: 1500px / 1.77px;
-    max-width: 1500px;
+    max-height: 1000px / 1.77px;
+    max-width: 1000px;
   } // Extra large screen (ultrawide)
   @media screen and (min-width: 1904px) {
     max-height: 1800px / 1.77px;

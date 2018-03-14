@@ -13,6 +13,9 @@ export default {
     ...mapState('SANS/Fit', {
       selected: state => state.filters,
     }),
+    allFiles() {
+      return Object.assign({}, this.fetched, this.uploaded);
+    },
   },
   methods: {
     ...mapMutations('SANS/Fit', [

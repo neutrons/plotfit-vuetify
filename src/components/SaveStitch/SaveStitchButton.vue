@@ -1,31 +1,34 @@
 <template>
-<v-dialog v-model='show' persistent max-width='50%'>
-  <v-btn flat slot='activator' :disabled='!stitchedData.length'>
-    <v-icon left v-if='isBreakpointSmall'>fa-floppy-o</v-icon>
-    <span>Store Stitch</span>
-    <v-icon right v-if='!isBreakpointSmall'>fa-floppy-o</v-icon>
-  </v-btn>
-  <v-card>
-    <v-card-title class='green white--text'>
-      <div class='headline'>Save stitched line?</div>
-    </v-card-title>
+<v-tooltip top :close-delay='1' :disabled='!stitchedData.length'>
+  <v-dialog slot='activator' v-model='show' persistent max-width='50%'>
+      <v-btn flat slot='activator' :disabled='!stitchedData.length'>
+        <v-icon left v-if='isBreakpointSmall'>fa-floppy-o</v-icon>
+        <span>Store Stitch</span>
+        <v-icon right v-if='!isBreakpointSmall'>fa-floppy-o</v-icon>
+      </v-btn>
+    <v-card>
+      <v-card-title class='green white--text'>
+        <div class='headline'>Save stitched line?</div>
+      </v-card-title>
 
-    <v-card-text>
-      <v-form v-model='valid' ref='form' lazy-validation>
-        <v-text-field label='File Name' placeholder='e.g. file_name' v-model='name' :rules='nameRules' required suffix='_IQ.txt' class='mb-3'></v-text-field>
+      <v-card-text>
+        <v-form @submit.prevent='submit' v-model='valid' ref='form' lazy-validation>
+          <v-text-field label='File Name' placeholder='e.g. file_name' v-model='name' :rules='nameRules' required suffix='_IQ.txt' class='mb-3'></v-text-field>
 
-        <v-layout>
-          <v-spacer></v-spacer>
-          <v-btn @click='close' color='error' outline flat>cancel</v-btn>
-          <v-btn @click='submit' :disabled='!valid' outline flat color='success'>
-            submit
-          </v-btn>
-        </v-layout>
+          <v-layout>
+            <v-spacer></v-spacer>
+            <v-btn @click='close' color='error' outline flat>cancel</v-btn>
+            <v-btn @click='submit' :disabled='!valid' outline flat color='success'>
+              submit
+            </v-btn>
+          </v-layout>
 
-      </v-form>
-    </v-card-text>
-  </v-card>
-</v-dialog>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+  <span>Click to store stitched curve</span>
+</v-tooltip>
 </template>
 
 <script>
@@ -77,6 +80,8 @@ export default {
         return 'Invalid file name.';
       } else if (!rg4.test(value)) {
         return 'Start file names with a character.';
+      } else if (value === 'stitch') {
+        return 'Stitch is a reserved word. Give file another name.';
       }
 
       return true;

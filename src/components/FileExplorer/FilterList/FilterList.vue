@@ -9,6 +9,7 @@
       max-height='250'
       chips
       deletable-chips
+      :placeholder='tags.length ? "Select a tag to filter list" : "No tags available"'
       hint='Pick tags to filter files'
       :disabled='tags.length === 0'
       @change='$refs.filterList.isActive = $event.length > 1'>
@@ -19,9 +20,6 @@
 export default {
   name: 'FilterList',
   computed: {
-    allFiles() {
-      return Object.assign({}, this.fetched, this.uploaded);
-    },
     filenames() {
       return Object.keys(this.allFiles);
     },

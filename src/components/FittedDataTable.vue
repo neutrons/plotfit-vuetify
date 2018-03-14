@@ -1,10 +1,13 @@
 <template>
 <v-card flat>
-  <v-card-title class='pb-0' v-if='allowExport'>
-    <v-btn outline flat small color='success' @click='downloadFittedData'>
-      <v-icon :left='!isBreakpointSmall'>file_download</v-icon>
-      <span class='hidden-md-and-down'>Export CSV</span>
-    </v-btn>
+  <v-card-title class='pb-0 pt-0' v-if='allowExport'>
+    <v-tooltip top :close-delay='1'>
+      <v-btn slot='activator' outline flat small color='success' @click='downloadFittedData'>
+        <v-icon :left='!isBreakpointSmall'>file_download</v-icon>
+        <span class='hidden-md-and-down'>Export CSV</span>
+      </v-btn>
+      <span>Click to export fitted data to .csv file</span>
+    </v-tooltip>
   </v-card-title>
   <v-card-text class='pt-1'>
     <v-data-table :headers='fittedHeaders' :items='fittedData' class='text-xs-center' :rows-per-page-items='[25, 50, 100, { text: "All", value: -1 }]'>

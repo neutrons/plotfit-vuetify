@@ -1,8 +1,11 @@
 <template>
-  <v-btn flat small :icon='isBreakpointSmall' @click='toggle = !toggle' :disabled='filesSelected.length < 2'>
+<v-tooltip top :close-delay='1' :disabled='filesSelected.length < 2'>
+  <v-btn slot='activator' flat small :icon='isBreakpointSmall' @click='toggle = !toggle' :disabled='filesSelected.length < 2'>
     <span class='hidden-md-and-down'>{{ !isZoomBrush ? 'Zoom' : 'Select'}}</span>
     <v-icon :right='!isBreakpointSmall'>{{ !isZoomBrush ? 'zoom_in' : 'crop_free' }}</v-icon>
   </v-btn>
+  <span>Click to enable {{ !isZoomBrush ? 'zoom' : 'selection'}}</span>
+</v-tooltip>
 </template>
 
 <script>

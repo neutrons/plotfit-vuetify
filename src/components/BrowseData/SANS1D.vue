@@ -1,28 +1,32 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import DefaultChart from './DefaultChart';
 
 export default {
   name: 'SANS1DBrowse',
   extends: DefaultChart,
+  components: {
+    'v-edit-chart-button': () => import('../EditChart/EditChartButton/SANSBrowseEditChartButton'),
+  },
   data() {
     return {
       isMathJax: true,
-      label: {
-        x: 'q = x',
-        y: 'I(q) = y',
-      },
       ID: 'SANS-Browse',
     };
   },
   computed: {
     ...mapState('SANS/Browse', {
       browseData: state => state.browseData,
+      label: state => state.label,
     }),
-    plotData() {
-      if (!Object.keys(this.browseData).length) return [];
-      return this.browseData.data;
-    },
+    ...mapGetters('SANS/Browse', {
+      plotData: 'getPreparedData',
+    }),
+  },
+  methods: {
+    ...mapActions('SANS/Browse', [
+      'deletePoint',
+    ]),
   },
 };
 </script>

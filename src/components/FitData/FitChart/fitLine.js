@@ -27,7 +27,7 @@ export default {
         .select('path')
         .data([tempData])
         .attr('d', newLine)
-        .style('stroke', this.colorScale(this.fileToFit))
+        .style('stroke', 'brown')
         .style('stroke-width', '2px')
         .style('fill', 'none')
         .style('stroke-dasharray', '10, 5');
@@ -66,7 +66,7 @@ export default {
         .select('path')
         .data([newDataPoints])
         .attr('d', newLine)
-        .style('stroke', this.colorScale(this.fileToFit))
+        .style('stroke', 'brown')
         .style('stroke-width', '2px')
         .style('fill', 'none')
         .style('stroke-dasharray', '10, 5');

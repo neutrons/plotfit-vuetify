@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
 
-import setResponsive from '../../assets/js/chartFunctions/setResponsive';
 import getContainerWidth from '../../assets/js/chartFunctions/getContainerWidth';
 import addClipPath from '../../assets/js/chartFunctions/addClipPath';
 import axes from '../../assets/js/chartFunctions/axes';
@@ -10,7 +9,6 @@ import zoom from './zoom';
 
 export default {
   mixins: [
-    setResponsive,
     getContainerWidth,
     axes,
     labels,
@@ -20,13 +18,13 @@ export default {
   ],
   methods: {
     drawChart() {
+      // const vm = this;
       if (this.filesSelected === null) {
         // Add tool tip and hide it until invoked
         this.svg = d3.select(`.chart-${this.ID}`)
           .attr('viewBox', this.viewBox)
           .attr('perserveAspectRatio', 'xMidYMid meet')
-          .attr('height', this.height + this.margin.top + this.margin.bottom)
-          .attr('width', this.width + this.margin.left + this.margin.right);
+          .attr('width', '100%');
 
         this.addLabels();
 
@@ -159,9 +157,23 @@ export default {
           .attr('stroke', d => colorScale(d.avgIntensity))
           .attr('class', 'hexagons')
           .on('mouseover', (d) => {
-            this.xPoint = this.xScale.invert(d.x);
-            this.yPoint = this.yScale.invert(d.y);
-            this.intensityPoint = d.avgIntensity;
+            let middleX = newXScale.domain().map(item => Math.abs(item));
+            middleX = (middleX[1] - middleX[0]) / 2;
+            const moveX = Math.abs(d.x) > middleX ? d3.event.pageX - 200 : d3.event.pageX + 25;
+
+            const html = `<p>Qx: ${d.x.toExponential(2)}</p>
+              <p>Qy: ${d.y.toExponential(2)}</p>
+              <p>Intensity: ${d.avgIntensity.toExponential(2)}</p>`;
+
+            d3.select('.my-tooltip')
+              .style('display', 'inline')
+              .style('left', `${moveX}px`)
+              .style('top', `${d3.event.pageY - 50}px`)
+              .html(html);
+          })
+          .on('mouseout', () => {
+            d3.select('.my-tooltip')
+              .style('display', 'none');
           });
       }
     },

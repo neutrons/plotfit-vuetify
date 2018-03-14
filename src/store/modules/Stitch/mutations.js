@@ -3,9 +3,8 @@ import * as d3 from 'd3';
 
 import updateFilesSelected from '../../shared/mutations/updateFilesSelected';
 import updateFilters from '../../shared/mutations/updateFilters';
-import setXScale from '../../shared/mutations/setXScale';
-import setYScale from '../../shared/mutations/setYScale';
-import resetScales from '../../shared/mutations/resetScales';
+import { setXScale, setYScale, resetScales } from '../../shared/mutations/scales';
+import removePoint from '../../shared/mutations/removePoint';
 
 export default {
   updateFilesSelected,
@@ -13,6 +12,7 @@ export default {
   setXScale,
   setYScale,
   resetScales,
+  removePoint,
   setCurrentData(state, chosenData) {
     const tempData = _.cloneDeep(chosenData);
     const tempSelect = [];
@@ -43,7 +43,6 @@ export default {
       x: 'q = x',
       y: 'I(q) = y',
     };
-    state.deleteKeys = [];
     state.isZoomBrush = true;
     state.brushes = [];
     state.brushSelections = {};

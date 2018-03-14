@@ -24,6 +24,9 @@ export default {
         this.updateFilesSelected(value);
       },
     },
+    allFiles() {
+      return Object.assign({}, this.fetched, this.uploaded);
+    },
   },
   methods: {
     ...mapMutations('SANS/Fit', [

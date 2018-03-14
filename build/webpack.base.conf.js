@@ -30,6 +30,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        loader: 'ify-loader'
+      },
+      {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',

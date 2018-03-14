@@ -6,8 +6,7 @@ export default {
       this.svg = d3.select(name)
         .attr('viewBox', this.viewBox)
         .attr('perserveAspectRatio', 'xMidYMid meet')
-        .attr('height', this.height + this.margin.top + this.margin.bottom)
-        .attr('width', this.width + this.margin.left + this.margin.right);
+        .attr('width', '100%');
 
       this.addLabels();
       this.addClipPath();

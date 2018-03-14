@@ -7,7 +7,6 @@
 
 <script>
 import axios from 'axios';
-import pathParse from 'path-parse';
 import { eventBus } from '../assets/js/eventBus';
 import isBreakpointSmall from '../assets/js/isBreakpointSmall';
 
@@ -70,7 +69,9 @@ export default {
       const temp = {};
 
       data.forEach((file) => {
-        const filename = pathParse(file.url).name;
+        const re = /exp(\d+)_scan(\d+)/;
+        const found = re.exec(file.url);
+        const filename = found[0];
 
         temp[filename] = {
           filename,
@@ -82,7 +83,7 @@ export default {
         };
       });
 
-      this.$store.commit('TAS/addFetchFiles', temp);
+      this.$store.dispatch('TAS/addFetchFiles', temp);
     },
     fetchSANS(data) {
       const temp = {};
@@ -109,7 +110,7 @@ export default {
       });
 
       const namespace = this.$route.name !== 'SANS2D' ? 'SANS' : 'SANS/SANS2D';
-      this.$store.commit(`${namespace}/addFetchFiles`, temp);
+      this.$store.dispatch(`${namespace}/addFetchFiles`, temp);
     },
   },
   watch: {

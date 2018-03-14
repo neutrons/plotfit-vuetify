@@ -4,7 +4,6 @@ import scales from '../../scales/scales';
 export default {
   filesSelected: [],
   stitchedData: [],
-  deleteKeys: [],
   filters: [],
   selectedData: [],
   scale: {

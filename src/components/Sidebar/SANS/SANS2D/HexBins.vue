@@ -18,9 +18,12 @@
             thumb-color='primary'
           ></v-slider>
 
-          <v-btn block outline @click='resetBS' color='warning'>
-            <v-icon left>fa-undo</v-icon> Reset Bin Size
-          </v-btn>
+          <v-tooltip top :close-delay='1'>
+            <v-btn slot='activator' block outline @click='resetBS' color='warning'>
+              <v-icon left>fa-undo</v-icon> Reset Bin Size
+            </v-btn>
+            <span>Click to reset bin size</span>
+          </v-tooltip>
         </v-flex>
 
       </v-layout>
