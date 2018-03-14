@@ -13,10 +13,13 @@
           <v-select label='Y Scale' :items='yScales' v-model='selectY' hint='Select Y Scale'>
           </v-select>
 
-          <v-btn block outline @click='resetPlotScales' color='warning'>
-            <v-icon left>fa-undo</v-icon>
-            <span>Reset Scales</span>
-          </v-btn>
+          <v-tooltip top :close-delay='1'>
+            <v-btn slot='activator' block outline @click='resetPlotScales' color='warning'>
+              <v-icon left>fa-undo</v-icon>
+              <span>Reset Scales</span>
+            </v-btn>
+            <span>Click to reset plot scales</span>
+          </v-tooltip>
         </v-flex>
         
       </v-layout>

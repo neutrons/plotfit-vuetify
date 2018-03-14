@@ -1,8 +1,11 @@
 <template>
-  <v-btn flat small @click='savePlot' :disabled='disable' :icon='isBreakpointSmall'>
-    <span class='hidden-md-and-down'>Export Chart</span>
-    <v-icon :right='!isBreakpointSmall'>fa-floppy-o</v-icon>
-  </v-btn>
+<v-tooltip top :close-delay='1' :disabled='disable'>
+    <v-btn slot='activator' flat small @click='savePlot' :disabled='disable' :icon='isBreakpointSmall'>
+      <span class='hidden-md-and-down'>Export Plot</span>
+      <v-icon :right='!isBreakpointSmall'>fa-floppy-o</v-icon>
+    </v-btn>
+    <span>Click to export plot to .png</span>
+</v-tooltip>
 </template>
 
 <script>

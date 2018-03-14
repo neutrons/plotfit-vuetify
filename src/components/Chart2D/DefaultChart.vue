@@ -135,7 +135,6 @@ export default {
   mounted() {
     this.getContainerWidth(`#chart-wrapper-${this.ID}`);
     this.drawChart();
-    this.setResponsive(`chart-width-change-${this.ID}`, `#chart-wrapper-${this.ID}`, `.chart-${this.ID}`);
   },
   methods: {
     removeChart() {
@@ -159,16 +158,11 @@ export default {
             this.getContainerWidth(`#chart-wrapper-${this.ID}`);
             this.removeChart();
             this.drawChart();
-            this.setResponsive(`chart-width-change-${this.ID}`, `#chart-wrapper-${this.ID}`, `.chart-${this.ID}`);
           } else {
             this.drawChart();
           }
         });
       },
-    },
-    title() {
-      // maintain responsive charts when switching between plot components
-      this.setResponsive(`chart-width-change-${this.ID}`, `#chart-wrapper-${this.ID}`, `.chart-${this.ID}`);
     },
   },
 };
@@ -213,8 +207,8 @@ iframe.width-changed {
     max-width: 1000px;
   } // Large screen (desktop)
   @media screen and (min-width: 1264px) and (max-width: 1903px) {
-    max-height: 1500px / 1.77px;
-    max-width: 1500px;
+    max-height: 1000px / 1.77px;
+    max-width: 1000px;
   } // Extra large screen (ultrawide)
   @media screen and (min-width: 1904px) {
     max-height: 1800px / 1.77px;

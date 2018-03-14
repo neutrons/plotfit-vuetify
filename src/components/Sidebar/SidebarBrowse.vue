@@ -19,6 +19,7 @@
             deletable-chips
             bottom
             hide-details
+            :placeholder='fileList.length > 0 ? "Select a file to browse" : "Fetch or upload files"'
             max-height='150'
             autocomplete
           ></v-select>
@@ -30,33 +31,29 @@
 
   <v-expansion-panel-content :value='true'>
     <div slot='header' class='title'>Tags</div>
-    <v-card>
-      <v-card-text>
-      <v-select
-        :prepend-icon='edit ? "cancel" : "edit"'
-        :prepend-icon-cb='toggleEdit'
-        v-model='selectedTags'
-        multiple
-        chips
-        deletable-chips
-        tags
-        :items='allTags'
-        :readonly='!edit'
-      ></v-select>
-      <div class='text-xs-right'>
-        <v-btn small outline flat v-if='edit' @click='cancelEdit' color='error'>
-          <v-icon left>cancel</v-icon>
-          <span>Cancel</span>
-        </v-btn>
-        <v-btn small outline flat v-if='edit' @click='saveEdit' color='success'>
-          <v-icon left>check_circle</v-icon>
-          <span>Save Tags</span>
-        </v-btn>
-      </div>
-      </v-card-text>
+      <v-card>
+        <v-card-text>
+          <v-tooltip right :close-delay='1' :disabled='!edit'>
+            <v-select
+              slot='activator'
+              ref='tagSelect'
+              :prepend-icon='edit ? "cancel" : "edit"'
+              :prepend-icon-cb='toggleEdit'
+              v-model='selectedTags'
+              multiple
+              chips
+              deletable-chips
+              tags
+              :items='allTags'
+              :readonly='!edit'
+              @input='tagListChange'
+            ></v-select>
+            <span>Press <code>tab</code> or <code>enter</code> to add tag.</span>
+          </v-tooltip>
+        </v-card-text>
       </v-card>
-    </v-expansion-panel-content>
-  </v-expansion-panel>
+  </v-expansion-panel-content>
+</v-expansion-panel>
 </template>
 
 <script>
@@ -104,6 +101,16 @@ export default {
     },
   },
   methods: {
+    tagListChange() {
+      const loadType = this.allFiles[this.selectedFile].loadType;
+      const payload = {
+        loadType,
+        filename: this.selectedFile,
+        tags: this.selectedTags,
+      };
+
+      this.updateTags(payload);
+    },
     move(direction) {
       if (!this.fileList.length) return;
       const index = this.fileList.indexOf(this.selectedFile);
@@ -117,30 +124,11 @@ export default {
     },
     toggleEdit() {
       if (!this.fileList.length || this.selectedFile === null) return;
+      this.edit = !this.edit;
 
       if (!this.edit) {
-        this.tempSelectedTags = this.selectedTags;
-        this.edit = !this.edit;
-      } else {
-        this.selectedTags = this.tempSelectedTags;
-        this.edit = !this.edit;
+        this.$refs.tagSelect.isActive = false;
       }
-    },
-    cancelEdit() {
-      this.selectedTags = this.tempSelectedTags;
-      this.edit = !this.edit;
-    },
-    saveEdit() {
-      this.edit = !this.edit;
-      // below updates selected file's tag list
-      const loadType = this.allFiles[this.selectedFile].loadType;
-      const payload = {
-        loadType,
-        filename: this.selectedFile,
-        tags: this.selectedTags,
-      };
-
-      this.updateTags(payload);
     },
     onKeyUp(event) {
       const isRight = event.key === 'ArrowRight' || event.code === 'ArrowRight';

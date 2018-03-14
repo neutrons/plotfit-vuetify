@@ -5,6 +5,16 @@
 
     <v-container>
       <v-layout row wrap>
+        <v-flex xs12 v-if='$options.name === "FileExplorerTAS"'>
+          <v-alert 
+            outline
+            type='warning'
+            :value='typeof isDefaultFieldsDifferent === "string"'
+            transition='fade-transition'
+            icon='fa-exclamation-triangle'
+            class='pa-2'
+          >{{ isDefaultFieldsDifferent }}</v-alert>
+        </v-flex>
 
         <v-flex xs12 v-if='filter'>
           <v-filter-list />

@@ -7,7 +7,7 @@
         fixed
         app
         hide-overlay
-        width='450'
+        width='350'
         mobile-break-point='600'
         :dark='$vuetify.theme.name !== "white"'
     >
@@ -28,10 +28,11 @@ export default {
     SidebarSANS2D: () => import('./SANS/SANS2D/SidebarSANS2D'),
     SidebarTASFit: () => import('./TAS/Fit/SidebarTASFit'),
     SidebarTASBrowse: () => import('./TAS/Browse/SidebarTASBrowse'),
+    SidebarTASCombine: () => import('./TAS/Combine/SidebarTASCombine'),
     Sidebar404: () => import('./Sidebar404'),
   },
   props: {
-    drawer: {
+    show: {
       type: Boolean,
       required: true,
     },
@@ -39,7 +40,7 @@ export default {
   computed: {
     toggle: {
       get() {
-        return this.drawer;
+        return this.show;
       },
       set() {},
     },

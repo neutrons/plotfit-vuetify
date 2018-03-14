@@ -75,4 +75,19 @@ export default {
     xLabel: 'x',
     note: '',
   },
+  'Custom Equation': {
+    title: 'Custom Equation',
+    equation: 'A + x',
+    initialValues: [
+      { coefficient: 'A', value: 1, constant: false },
+    ],
+    transformations: {
+      x: 'x',
+      y: 'y',
+      error: 'error',
+    },
+    yLabel: 'y',
+    xLabel: 'x',
+    note: '',
+  },
 };

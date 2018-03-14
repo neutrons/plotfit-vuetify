@@ -8,10 +8,12 @@
 
         <v-flex xs12>
           <v-select label='Intensity Scale' :items='scales' v-model='editHexScale'></v-select>
-
-          <v-btn block outline @click='resetS' color='warning'>
-            <v-icon left>fa-undo</v-icon> Reset Scale
-          </v-btn>
+          <v-tooltip top :close-delay='1'>
+            <v-btn slot='activator' block outline @click='resetS' color='warning'>
+              <v-icon left>fa-undo</v-icon> Reset Scale
+            </v-btn>
+            <span>Click to reset hexbin scale</span>
+          </v-tooltip>
         </v-flex>
 
       </v-layout>

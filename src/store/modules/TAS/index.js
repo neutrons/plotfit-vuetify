@@ -6,8 +6,9 @@ import actions from './actions';
 import mutations from './mutations';
 
 // Import Modules
-import Browse from '../Browse';
-import Fit from '../Fit/TASFit';
+import Browse from '../Browse/TAS';
+import Fit from '../Fit/TAS';
+import Combine from '../Combine';
 
 export default {
   namespaced: true,
@@ -15,6 +16,7 @@ export default {
   modules: {
     Browse: _.cloneDeep(Browse),
     Fit: _.cloneDeep(Fit),
+    Combine: _.cloneDeep(Combine),
   },
   getters,
   actions,

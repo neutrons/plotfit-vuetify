@@ -11,6 +11,9 @@ export default {
       fetched: state => state.fetched,
       uploaded: state => state.uploaded,
     }),
+    allFiles() {
+      return Object.assign({}, this.fetched, this.uploaded);
+    },
   },
   methods: {
     ...mapMutations('SANS/SANS2D', [

@@ -9,8 +9,11 @@
     <!-- Transformations -->
     <v-transformations v-if='isFilesPlotted' />
 
-    <!-- Fit Configurations -->
-    <v-fit-configuration :collapse='false' v-if='isFileFit'/>
+    <!-- Fit Equation Editor -->
+    <v-fit-equation :collapse='false' v-if='isFileFit' />
+
+    <!-- Levenberg Settings -->
+    <v-fit-settings v-if='isFileFit' />
   </div>
 </template>
 
@@ -20,7 +23,8 @@ import { mapGetters } from 'vuex';
 import FileExplorer from '../../../FileExplorer/FileExplorerSANS1D';
 import Scales from '../../../Scales/ScalesSANS1D';
 import Transformations from '../../../Transformations/TransformationsSANS1D';
-import FitConfiguration from './FitConfiguration';
+import FitSettings from '../../../FitSettings/FitSettingsSANS1D';
+import FitEquation from '../../../FitEquations/FitEquationSANS';
 
 export default {
   name: 'SidebarSANSFit',
@@ -28,7 +32,8 @@ export default {
     'v-file-explorer': FileExplorer,
     'v-scales': Scales,
     'v-transformations': Transformations,
-    'v-fit-configuration': FitConfiguration,
+    'v-fit-settings': FitSettings,
+    'v-fit-equation': FitEquation,
   },
   computed: {
     ...mapGetters('SANS/Fit', [

@@ -15,6 +15,9 @@ export default {
       fileToFit: state => state.fileToFit,
       filters: state => state.filters,
     }),
+    ...mapState('TAS/Combine', {
+      storedCombined: state => state.storedCombined,
+    }),
     selected: {
       get() {
         return this.filesSelected;
@@ -23,6 +26,9 @@ export default {
         if (value.indexOf(this.fileToFit) === -1) this.updateFileToFit(null);
         this.updateFilesSelected(value);
       },
+    },
+    allFiles() {
+      return Object.assign({}, this.fetched, this.uploaded, this.storedCombined);
     },
   },
   methods: {

@@ -8,9 +8,9 @@ export default {
 
       // set a default width if container is less than zero
       // using window width - 450
-      // 450 is because of the default width of left navigation drawer,
+      // 350 is because of the default width of left navigation drawer,
       // since by default it is open
-      if (containerWidth < 1) containerWidth = window.innerWidth - 450;
+      if (containerWidth < 1) containerWidth = window.innerWidth - 350;
 
       // View Height is calculated on a 16:9 aspect ratio
       // This is to properly adjust the plot to the container width

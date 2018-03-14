@@ -9,8 +9,11 @@
     <!-- Fields -->
     <v-fields v-if='filesSelected.length' />
 
-    <!-- Fit Configurations -->
-    <v-fit-configuration :collapse='false' v-if='fileToFit'/>
+    <!-- Fit Equation Editor -->
+    <v-fit-equation :collapse='false' :multiple-equations='true' v-if='fileToFit' />
+
+    <!-- Levenberg Settings -->
+    <v-fit-settings v-if='fileToFit' />
   </div>
 </template>
 
@@ -19,8 +22,9 @@ import { mapState } from 'vuex';
 
 import FileExplorer from '../../../FileExplorer/FileExplorerTAS';
 import Scales from '../../../Scales/ScalesTAS';
-import Fields from './Fields';
-import FitConfiguration from './FitConfiguration';
+import Fields from '../../../Fields/FieldsTASFit';
+import FitSettings from '../../../FitSettings/FitSettingsTAS';
+import FitEquation from '../../../FitEquations/FitEquationTAS';
 
 export default {
   name: 'SidebarTASFit',
@@ -28,7 +32,8 @@ export default {
     'v-file-explorer': FileExplorer,
     'v-scales': Scales,
     'v-fields': Fields,
-    'v-fit-configuration': FitConfiguration,
+    'v-fit-equation': FitEquation,
+    'v-fit-settings': FitSettings,
   },
   computed: {
     ...mapState('TAS/Fit', {

@@ -1,8 +1,11 @@
 <template>
-<v-btn flat small :icon='isBreakpointSmall' @click='$emit("remove-brushes", false)' :disabled='disable'>
-  <span class='hidden-md-and-down'>Remove Selections</span>
-  <v-icon :right='!isBreakpointSmall'>grid_off</v-icon>
-</v-btn>
+<v-tooltip top :close-delay='1' :disabled='disable'>
+  <v-btn slot='activator' flat small :icon='isBreakpointSmall' @click='$emit("remove-brushes", false)' :disabled='disable'>
+    <span class='hidden-md-and-down'>Remove Selections</span>
+    <v-icon :right='!isBreakpointSmall'>grid_off</v-icon>
+  </v-btn>
+  <span>Click to remove current selections</span>
+</v-tooltip>
 </template>
 
 <script>

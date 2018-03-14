@@ -1,15 +1,18 @@
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import Chart from './DefaultChart';
 import { eventBus } from '../../../assets/js/eventBus';
 
 export default {
   name: 'ChartTAS',
+  components: {
+    'v-edit-chart-button': () => import('../../EditChart/EditChartButton/TASFitEditChartButton'),
+  },
   extends: Chart,
   data() {
     return {
       isMathJax: false,
-      activeParentTab: 'tab-metadata',
+      activeParentTab: null,
     };
   },
   created() {
@@ -21,13 +24,9 @@ export default {
     eventBus.$off('revise-fit-line-TAS');
   },
   computed: {
-    ...mapState('TAS', {
-      colorDomain: state => state.colorDomain,
-    }),
     ...mapState('TAS/Fit', {
       filesSelected: state => state.filesSelected,
       plotScale: state => state.plotScale,
-      deleteKeys: state => state.deleteKeys,
       label: state => state.field,
       fileToFit: state => state.fileToFit,
       previousFit: state => state.previousFit,
@@ -45,6 +44,8 @@ export default {
       isFileFit: 'isFileFit',
       metadata: 'getMetadata',
       preparedData: 'getPreparedData',
+      fitInitialValues: 'fitInitialValues',
+      fitEquation: 'finalEquation',
     }),
     plottedData() {
       const temp = this.preparedData.map(d => d.values)
@@ -68,9 +69,27 @@ export default {
     ...mapMutations('TAS/Fit', [
       'resetBrushSelection',
       'setPreviousFit',
-      'updateFitTableResults',
       'toggleIsFitting',
     ]),
+    ...mapActions('TAS/Fit', [
+      'updateFitTableResults',
+    ]),
+  },
+  watch: {
+    filesSelected() {
+      if (this.filesSelected.length) {
+        this.activeParentTab = 'tab-metadata';
+      } else {
+        this.activeParentTab = null;
+      }
+    },
+    fileToFit() {
+      if (this.filesSelected.length) {
+        this.activeParentTab = this.fileToFit === null ? 'tab-metadata' : 'tab-fit';
+      } else {
+        this.activeParentTab = null;
+      }
+    },
   },
 };
 

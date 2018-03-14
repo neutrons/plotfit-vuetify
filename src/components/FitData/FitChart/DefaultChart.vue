@@ -21,7 +21,7 @@
 
               <!-- Chart container -->
               <v-flex xs12 :id='`fit-chart-wrapper-${ID}`' text-xs-center mb-3>
-                <svg :class='`fit-chart fit-chart-${ID}`' />
+                <svg :class='`chart fit-chart fit-chart-${ID}`' />
               </v-flex>
 
               <v-flex xs12>
@@ -29,8 +29,7 @@
                   <v-container class='pa-0' fluid>
                     <v-layout row wrap class='pa-0'>
                       <v-reset-chart-button @reset-chart='resetChart' :disable='filesSelected.length === 0'></v-reset-chart-button>
-                      <v-export-chart-button :ID='ID' :selection='`.fit-chart-${ID}`' :disable='filesSelected.length === 0'></v-export-chart-button>
-                      <v-legend-button @toggle-legend='drawerRight = !drawerRight' @close-legend='drawerRight = false' :disable='filesSelected.length === 0'></v-legend-button>
+                      <v-edit-chart-button :disable='filesSelected.length === 0' ></v-edit-chart-button>
 
                       <v-spacer></v-spacer>
                       <!-- scatter point hover values -->
@@ -40,7 +39,7 @@
                         <span class='mr-2'>Error: {{errorPoint.toExponential(2)}}</span>
                       </v-subheader>
                       <v-spacer></v-spacer>
-                      <v-btn :icon='!isBreakpointSmall' flat @click='showTabs = !showTabs' v-if='fileToFit || metadataLength > 0'>
+                      <v-btn icon flat @click='showTabs = !showTabs' v-if='fileToFit || metadataLength > 0'>
                         <v-icon small>{{ showTabs ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</v-icon>
                       </v-btn>
                     </v-layout>
@@ -79,12 +78,6 @@
         </v-tabs-items>
       </v-tabs>
   </v-flex>
-
-  <v-legend
-    :drawer-right='drawerRight'
-    :color-scale='colorScale'
-    :files-selected='filesSelected'
-    :file-to-fit='fileToFit'></v-legend>
 
   <!-- Modal Picker for Fit Initial Values -->
   <v-slide-y-transition>
@@ -137,9 +130,6 @@ export default {
     chartMethods,
   ],
   components: {
-    'v-legend-button': () => import('../../Legend/LegendButton'),
-    'v-legend': () => import('../../Legend/Legend'),
-    'v-export-chart-button': () => import('../../ExportChartButton'),
     'v-reset-chart-button': () => import('../../ResetChartButton'),
     'v-plotted-data-table': () => import('../../PlottedDataTable'),
   },
@@ -199,7 +189,8 @@ export default {
       return this.plotScale.x.label;
     },
     colorScale() {
-      return d3.scaleOrdinal(d3.schemeCategory20).domain(this.colorDomain);
+      return d3.scaleOrdinal(d3.schemeCategory20)
+        .domain(this.plotData.map(d => d.key));
     },
     xAxis() {
       return d3.axisBottom(this.xScale);
@@ -268,7 +259,6 @@ export default {
 
     this.getContainerWidth(`#fit-chart-wrapper-${this.ID}`);
     this.drawChart();
-    this.setResponsive(`fit-chart-width-change-${this.ID}`, `#fit-chart-wrapper-${this.ID}`, `.fit-chart-${this.ID}`);
   },
   destroyed() {
     eventBus.$off(`toggle-pick-area-${this.$route.meta.group}`);
@@ -283,16 +273,11 @@ export default {
             this.removeChart();
             this.getContainerWidth(`#fit-chart-wrapper-${this.ID}`);
             this.drawChart();
-            this.setResponsive(`fit-chart-width-change-${this.ID}`, `#fit-chart-wrapper-${this.ID}`, `.fit-chart-${this.ID}`);
           } else {
             this.drawChart();
           }
         });
       },
-    },
-    title() {
-      // maintain responsive charts when switching between plot components
-      this.setResponsive(`fit-chart-width-change-${this.ID}`, `#fit-chart-wrapper-${this.ID}`, `.fit-chart-${this.ID}`);
     },
   },
 };
@@ -342,8 +327,8 @@ iframe.width-changed {
     max-width: 1000px;
   } // Large screen (desktop)
   @media screen and (min-width: 1264px) and (max-width: 1903px) {
-    max-height: 1500px / 1.77px;
-    max-width: 1500px;
+    max-height: 1000px / 1.77px;
+    max-width: 1000px;
   } // Extra large screen (ultrawide)
   @media screen and (min-width: 1904px) {
     max-height: 1800px / 1.77px;

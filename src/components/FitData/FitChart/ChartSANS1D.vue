@@ -1,15 +1,18 @@
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import Chart from './DefaultChart';
 import { eventBus } from '../../../assets/js/eventBus';
 
 export default {
   name: 'ChartSANS1D',
+  components: {
+    'v-edit-chart-button': () => import('../../EditChart/EditChartButton/SANSFitEditChartButton'),
+  },
   extends: Chart,
   data() {
     return {
       isMathJax: false,
-      activeParentTab: 'tab-fit',
+      activeParentTab: null,
     };
   },
   created() {
@@ -21,20 +24,14 @@ export default {
     eventBus.$off('revise-fit-line-SANS1D');
   },
   computed: {
-    ...mapState('SANS', {
-      colorDomain: state => state.colorDomain,
-    }),
     ...mapState('SANS/Fit', {
       filesSelected: state => state.filesSelected,
       plotScale: state => state.plotScale,
-      deleteKeys: state => state.deleteKeys,
       label: state => state.label,
       fileToFit: state => state.fileToFit,
       previousFit: state => state.previousFit,
       fittedData: state => state.fittedData,
       filteredData: state => state.filteredData,
-      fitEquation: state => state.fitEquation,
-      fitInitialValues: state => state.fitInitialValues,
       fitSettings: state => state.fitSettings,
       isFitting: state => state.isFitting,
     }),
@@ -43,6 +40,8 @@ export default {
       getExtent: 'getExtent',
       isFileFit: 'isFileFit',
       preparedData: 'getPreparedData',
+      fitInitialValues: 'fitInitialValues',
+      fitEquation: 'finalEquation',
     }),
     plottedData() {
       return this.preparedData.map(d => d.values).reduce((a, b) => a.concat(b), []);
@@ -52,9 +51,20 @@ export default {
     ...mapMutations('SANS/Fit', [
       'resetBrushSelection',
       'setPreviousFit',
-      'updateFitTableResults',
       'toggleIsFitting',
     ]),
+    ...mapActions('SANS/Fit', [
+      'updateFitTableResults',
+    ]),
+  },
+  watch: {
+    fileToFit() {
+      if (this.filesSelected.length) {
+        this.activeParentTab = this.fileToFit === null ? null : 'tab-fit';
+      } else {
+        this.activeParentTab = null;
+      }
+    },
   },
 };
 

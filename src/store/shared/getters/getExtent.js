@@ -2,11 +2,9 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 
 export default (state, getters) => (field) => {
-  let tempData = _.cloneDeep(getters.getPreparedData);
+  if (!getters.getChartConfigurations.data.length) return 'N/A';
 
-  if (tempData.length === 0) {
-    return 'N/A';
-  }
+  let tempData = _.cloneDeep(getters.getChartConfigurations.data);
 
   const yType = state.plotScale.y.label;
   const xType = state.plotScale.x.label;

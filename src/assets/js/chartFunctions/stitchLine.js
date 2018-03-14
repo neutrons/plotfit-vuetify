@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import _ from 'lodash';
 import interpolate from './interpolateLine';
 import { eventBus } from '../eventBus';
@@ -10,113 +9,28 @@ export default {
       const selectedData = this.selectData();
 
       // Run tests to check if appropriate brush selections are made
-      if (!selectedData.length || !this.validateSelections(selectedData)) return false;
+      if (selectedData.length && this.validateSelections(selectedData)) {
+        // console.log('Selected Data: ', selectedData);
+        // Now interpolate data
+        const line = interpolate.linear(selectedData);
 
-      // console.log('Selected Data: ', selectedData);
-      // Now interpolate data
-      const line = interpolate.linear(selectedData);
+        // First repackage data to an array of objects per points for d3 to work with
+        const tempData = [];
 
-      // First repackage data to an array of objects per points for d3 to work with
-      const tempData = [];
+        for (let i = 0, len = line.x.length; i < len; i += 1) {
+          tempData.push({
+            x: line.x[i],
+            y: line.y[i],
+            error: line.error[i],
+            name: 'stitch',
+          });
+        }
 
-      for (let i = 0, len = line.x.length; i < len; i += 1) {
-        tempData.push({
-          x: line.x[i],
-          y: line.y[i],
-          error: line.error[i],
-        });
-      }
-
-      this.setStitchedData(tempData);
-
-      // Put the line onto the plot
-      this.$nextTick(() => this.updateStitchLine());
-
-      return true;
-    },
-    updateStitchLine() {
-      if (!this.stitchedData.length) return;
-
-      const tempData = this.stitchedData.filter(this.filterForLog);
-      const trans = d3.transition().duration(750);
-      const [newXScale, newYScale] = this.rescaleToZoom();
-      const newLine = d3.line()
-        .defined(this.filterForLog)
-        .x(d => newXScale(d.x))
-        .y(d => newYScale(d.y));
-
-      if (this.g.select('.stitch-group').empty()) {
-        const group = this.g.select('.stitched-line').append('g').attr('class', 'stitch-group');
-
-        // Add error lines
-        group.append('g').attr('class', 'error-line')
-          .selectAll('line')
-          .data(tempData)
-          .call(this.updateErrorLine, newXScale, newYScale, trans);
-
-        // Add error cap top
-        group.append('g').attr('class', 'error-cap-top')
-          .selectAll('line')
-          .data(tempData)
-          .call(this.updateErrorCaps, 'top', newXScale, newYScale, trans);
-
-        // Add error cap bottom
-        group.append('g').attr('class', 'error-cap-bottom')
-          .selectAll('line')
-          .data(tempData)
-          .call(this.updateErrorCaps, 'bottom', newXScale, newYScale, trans);
-
-        // Add line path
-        group.append('g')
-          .attr('class', 'scatter-line')
-          .selectAll('path')
-          .data([tempData])
-          .call(this.updateLine, newLine, trans);
-
-        // Add scatter points
-        group.append('g').attr('class', 'scatter')
-          .selectAll('.point')
-          .data(tempData)
-          .call(this.updateScatter, newXScale, newYScale, trans, 'cross');
-      } else {
-        const group = this.g.select('.stitch-group');
-
-        // Update error bars
-        group.select('.error-line')
-          .selectAll('line')
-          .data(tempData)
-          .call(this.updateErrorLine, newXScale, newYScale, trans);
-
-        // Update error cap top
-        group.select('.error-cap-top')
-          .selectAll('line')
-          .data(tempData)
-          .call(this.updateErrorCaps, 'top', newXScale, newYScale, trans);
-
-        // Update error cap top
-        group.select('.error-cap-bottom')
-          .selectAll('line')
-          .data(tempData)
-          .call(this.updateErrorCaps, 'bottom', newXScale, newYScale, trans);
-
-        // Update line paths
-        group.select('.scatter-line')
-          .selectAll('path')
-          .data([tempData])
-          .call(this.updateLine, newLine, trans);
-
-        // Update scatter
-        group.select('.scatter')
-          .selectAll('.point')
-          .data(tempData)
-          .call(this.updateScatter, newXScale, newYScale, trans, 'cross');
+        this.setStitchedData(tempData);
       }
     },
     removeStitchLine() {
-      d3.select('.stitched-line').selectAll('*').remove();
       this.resetStitchedData();
-
-      return false;
     },
     selectData() {
       // If there are no brush selections, don't bother matching the data

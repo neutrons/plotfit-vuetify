@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
 
-import setResponsive from '../../assets/js/chartFunctions/setResponsive';
 import getContainerWidth from '../../assets/js/chartFunctions/getContainerWidth';
 import addClipPath from '../../assets/js/chartFunctions/addClipPath';
 import axes from '../../assets/js/chartFunctions/axes';
@@ -10,7 +9,6 @@ import zoom from './zoom';
 
 export default {
   mixins: [
-    setResponsive,
     getContainerWidth,
     axes,
     labels,
@@ -25,8 +23,7 @@ export default {
         this.svg = d3.select(`.chart-${this.ID}`)
           .attr('viewBox', this.viewBox)
           .attr('perserveAspectRatio', 'xMidYMid meet')
-          .attr('height', this.height + this.margin.top + this.margin.bottom)
-          .attr('width', this.width + this.margin.left + this.margin.right);
+          .attr('width', '100%');
 
         this.addLabels();
 
